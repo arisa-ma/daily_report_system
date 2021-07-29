@@ -15,9 +15,9 @@ import constants.ForwardConst;
 
 /**
  * フロントコントローラ
+ *
  */
-
-@WebServlet(name="FrontController", urlPatterns={"/"})
+@WebServlet("/")
 public class FrontController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -25,25 +25,28 @@ public class FrontController extends HttpServlet {
         super();
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    /**
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+     */
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         //パラメータに該当するActionクラスのインスタンス
-        ActionBase action = getAction(request,response);
+        ActionBase action = getAction(request, response);
 
         //サーブレットコンテキスト、リクエスト、レスポンスをActionインスタンスのフィールドに設定
-        action.init(getServletContext(),request, response);
+        action.init(getServletContext(), request, response);
 
         //Actionクラスの処理を呼び出し
         action.process();
     }
 
+
     /**
      * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
      */
-
-
-
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         doGet(request, response);
     }
 
@@ -54,17 +57,16 @@ public class FrontController extends HttpServlet {
      * @param response レスポンス
      * @return
      */
-
-    @SuppressWarnings({"rawtypes","unchecked"})//コンパイラ警告を抑制
+    @SuppressWarnings({ "rawtypes", "unchecked" }) //コンパイラ警告を抑制
     private ActionBase getAction(HttpServletRequest request, HttpServletResponse response) {
         Class type = null;
         ActionBase action = null;
         try {
 
-
-            //リクエストからパラメータ"action"の値を取得（例：(例:"Employee"、"Report")
+            //リクエストからパラメータ"action"の値を取得 (例:"Employee"、"Report")
             String actionString = request.getParameter(ForwardConst.ACT.getValue());
-          //該当するActionオブジェクトを作成 (例:リクエストからパラメータ action=Employee の場合、actions.EmployeeActionオブジェクト)
+
+            //該当するActionオブジェクトを作成 (例:リクエストからパラメータ action=Employee の場合、actions.EmployeeActionオブジェクト)
             type = Class.forName(String.format("actions.%sAction", actionString));
 
             //ActionBaseのオブジェクトにキャスト(例:actions.EmployeeActionオブジェクト→actions.ActionBaseオブジェクト)
